@@ -40,6 +40,7 @@ export interface RaceData {
   track: {
     name: string;
     corners: Array<{ number: number; x: number; y: number }>;
+    flag?: string;
   };
 }
 

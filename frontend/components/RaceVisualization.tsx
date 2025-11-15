@@ -9,12 +9,9 @@ import RaceControls from './RaceControls';
 import { RaceData } from '@/lib/api';
 import React from 'react';
 
-// Define props type if not imported
+// Define props type
 export interface RaceVisualizationProps {
-  raceData: any; // Replace 'any' with your actual raceData type if available
-  driver1State: { position: [number, number, number] };
-  driver2State: { position: [number, number, number] };
-  trackPoints: Array<[number, number]>;
+  raceData: RaceData;
   onBack?: () => void;
 }
 
