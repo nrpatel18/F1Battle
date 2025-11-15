@@ -35,7 +35,7 @@ This guide will help you deploy the F1 Telemetry Battle application to productio
      ```
    - **Important**: 
      - Railway automatically sets `PORT` - don't add it manually
-     - Update `CORS_ORIGINS` after you get your Vercel URL
+     - **For now, use the placeholder URL above** - you'll update this in Step 3 after deploying the frontend
 
 5. **Enable Persistent Storage** (Important for FastF1 cache):
    - Go to "Settings" → "Volumes"
@@ -121,14 +121,19 @@ vercel env add NEXT_PUBLIC_API_URL
 vercel --prod
 ```
 
-## Step 3: Update CORS Settings
+## Step 3: Update CORS Settings (CRITICAL!)
 
-After both are deployed:
+After both backend and frontend are deployed:
 
-1. **Get your Vercel frontend URL**
-2. **Update Railway backend environment variable**:
-   - `CORS_ORIGINS=https://your-frontend.vercel.app`
-3. **Redeploy backend** (Railway auto-redeploys on env var changes)
+1. **Get your actual Vercel frontend URL** (e.g., `https://f1-battle-abc123.vercel.app`)
+2. **Go back to Railway backend service** → "Variables" tab
+3. **Update `CORS_ORIGINS`**:
+   - Replace `https://your-frontend-url.vercel.app` 
+   - With your actual Vercel URL: `https://f1-battle-abc123.vercel.app`
+4. **Save** - Railway will automatically redeploy the backend
+5. **Test**: Your frontend should now be able to connect to the backend!
+
+**Note**: If you have a custom domain on Vercel, use that instead (e.g., `https://f1battle.com`)
 
 ## Alternative: Render (Backend)
 
