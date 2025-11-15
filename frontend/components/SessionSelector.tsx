@@ -47,7 +47,10 @@ export default function SessionSelector({ onSessionSelect }: SessionSelectorProp
     } catch (error) {
       setSessions([]);
       setSelectedRound(null);
-      console.error('Error loading sessions:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error loading sessions:', errorMessage, error);
+      // Show user-friendly error
+      alert(`Failed to load sessions: ${errorMessage}\n\nPlease check:\n1. Backend is running\n2. NEXT_PUBLIC_API_URL is set in Vercel\n3. CORS is configured correctly`);
     } finally {
       setLoading(false);
     }

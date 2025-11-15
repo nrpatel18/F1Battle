@@ -1,5 +1,10 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+// Log API URL in development to help debug
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  console.log('API URL:', API_URL);
+}
+
 export interface Session {
   round: number;
   name: string;
@@ -45,11 +50,22 @@ export interface RaceData {
 }
 
 export async function fetchSessions(year: number): Promise<Session[]> {
-  const response = await fetch(`${API_URL}/api/sessions?year=${year}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch sessions');
+  const url = `${API_URL}/api/sessions?year=${year}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Failed to fetch sessions from ${url}:`, response.status, errorText);
+      throw new Error(`Failed to fetch sessions: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching sessions from ${url}:`, error);
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error(`Network error: Cannot connect to ${API_URL}. Check if NEXT_PUBLIC_API_URL is set correctly.`);
+    }
+    throw error;
   }
-  return response.json();
 }
 
 export async function fetchDrivers(
