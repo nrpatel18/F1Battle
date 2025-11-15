@@ -37,9 +37,12 @@ This guide will help you deploy the F1 Telemetry Battle application to productio
      - Railway automatically sets `PORT` - don't add it manually
      - **For now, use the placeholder URL above** - you'll update this in Step 3 after deploying the frontend
 
-5. **Enable Persistent Storage** (Important for FastF1 cache):
-   - Go to "Settings" → "Volumes"
-   - Create a volume at `/app/cache` for the F1 cache directory
+5. **Enable Persistent Storage** (Optional but Recommended):
+   - **Note**: Volumes may not be available on Railway's free tier or may be in a different location
+   - **Without volumes**: The app will still work, but FastF1 cache will be lost on each restart (slower first loads)
+   - **With volumes**: Cache persists between restarts (faster subsequent loads)
+   - If available: Go to "Settings" → "Volumes" → Create volume at `/app/cache`
+   - **You can skip this step** - the app works fine without it, just slower on first requests
 
 6. **Get Your Backend URL**:
    - Railway will provide a URL like `https://your-app.railway.app`
