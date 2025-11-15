@@ -21,7 +21,7 @@ This guide will help you deploy the F1 Telemetry Battle application to productio
    - Select the `backend` folder as the root directory
 
 3. **Configure Settings**:
-   - **Root Directory**: `backend`
+   - **Root Directory**: `backend` (no leading slash - relative path from repo root)
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
    - Railway will auto-detect Python and use the Procfile
