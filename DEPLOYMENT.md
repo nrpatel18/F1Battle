@@ -32,9 +32,10 @@ This guide will help you deploy the F1 Telemetry Battle application to productio
      ```
      F1_CACHE_DIR=/app/cache
      CORS_ORIGINS=https://your-frontend-url.vercel.app
-     PORT=8000
      ```
-   - **Important**: Update `CORS_ORIGINS` after you get your Vercel URL
+   - **Important**: 
+     - Railway automatically sets `PORT` - don't add it manually
+     - Update `CORS_ORIGINS` after you get your Vercel URL
 
 5. **Enable Persistent Storage** (Important for FastF1 cache):
    - Go to "Settings" → "Volumes"
