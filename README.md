@@ -99,21 +99,13 @@ The app will be available at `http://localhost:3000`
 
 ## Deployment
 
-### Backend (Railway/Render)
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
-1. Set environment variables:
-   - `F1_CACHE_DIR=/app/cache`
-   - `CORS_ORIGINS=https://your-frontend.vercel.app`
+**Quick Start:**
+- **Backend**: Deploy to [Railway](https://railway.app) or [Render](https://render.com)
+- **Frontend**: Deploy to [Vercel](https://vercel.com)
 
-2. Build command: `pip install -r requirements.txt`
-3. Start command: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
-
-### Frontend (Vercel)
-
-1. Set environment variable:
-   - `NEXT_PUBLIC_API_URL=https://your-backend.railway.app`
-
-2. Deploy from GitHub or Vercel CLI
+Both platforms support GitHub integration for automatic deployments.
 
 ## Notes
 

@@ -1,0 +1,190 @@
+# Deployment Guide
+
+This guide will help you deploy the F1 Telemetry Battle application to production.
+
+## Prerequisites
+
+- GitHub account with the repository pushed
+- Railway account (for backend) - [Sign up here](https://railway.app)
+- Vercel account (for frontend) - [Sign up here](https://vercel.com)
+
+## Step 1: Deploy Backend (Railway)
+
+### Option A: Deploy via Railway Dashboard
+
+1. **Go to Railway**: Visit [railway.app](https://railway.app) and sign in with GitHub
+
+2. **Create New Project**:
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your `F1Battle` repository
+   - Select the `backend` folder as the root directory
+
+3. **Configure Settings**:
+   - **Root Directory**: `backend`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - Railway will auto-detect Python and use the Procfile
+
+4. **Set Environment Variables**:
+   - Go to the "Variables" tab
+   - Add:
+     ```
+     F1_CACHE_DIR=/app/cache
+     CORS_ORIGINS=https://your-frontend-url.vercel.app
+     PORT=8000
+     ```
+   - **Important**: Update `CORS_ORIGINS` after you get your Vercel URL
+
+5. **Enable Persistent Storage** (Important for FastF1 cache):
+   - Go to "Settings" → "Volumes"
+   - Create a volume at `/app/cache` for the F1 cache directory
+
+6. **Get Your Backend URL**:
+   - Railway will provide a URL like `https://your-app.railway.app`
+   - Copy this URL - you'll need it for the frontend
+
+### Option B: Deploy via Railway CLI
+
+```bash
+# Install Railway CLI
+npm i -g @railway/cli
+
+# Login
+railway login
+
+# Initialize project
+cd backend
+railway init
+
+# Deploy
+railway up
+```
+
+## Step 2: Deploy Frontend (Vercel)
+
+### Option A: Deploy via Vercel Dashboard
+
+1. **Go to Vercel**: Visit [vercel.com](https://vercel.com) and sign in with GitHub
+
+2. **Import Project**:
+   - Click "Add New" → "Project"
+   - Import your `F1Battle` repository
+   - Select the `frontend` folder as the root directory
+
+3. **Configure Settings**:
+   - **Framework Preset**: Next.js (auto-detected)
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build` (default)
+   - **Output Directory**: `.next` (default)
+
+4. **Set Environment Variables**:
+   - Go to "Environment Variables"
+   - Add:
+     ```
+     NEXT_PUBLIC_API_URL=https://your-backend.railway.app
+     ```
+   - Replace with your actual Railway backend URL
+
+5. **Deploy**:
+   - Click "Deploy"
+   - Vercel will build and deploy your app
+   - You'll get a URL like `https://f1-battle.vercel.app`
+
+6. **Update Backend CORS**:
+   - Go back to Railway
+   - Update `CORS_ORIGINS` to include your Vercel URL:
+     ```
+     CORS_ORIGINS=https://f1-battle.vercel.app,https://your-custom-domain.com
+     ```
+   - Redeploy the backend
+
+### Option B: Deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login
+vercel login
+
+# Deploy
+cd frontend
+vercel
+
+# Set environment variable
+vercel env add NEXT_PUBLIC_API_URL
+# Enter: https://your-backend.railway.app
+
+# Deploy to production
+vercel --prod
+```
+
+## Step 3: Update CORS Settings
+
+After both are deployed:
+
+1. **Get your Vercel frontend URL**
+2. **Update Railway backend environment variable**:
+   - `CORS_ORIGINS=https://your-frontend.vercel.app`
+3. **Redeploy backend** (Railway auto-redeploys on env var changes)
+
+## Alternative: Render (Backend)
+
+If you prefer Render over Railway:
+
+1. **Go to Render**: [render.com](https://render.com)
+
+2. **Create New Web Service**:
+   - Connect your GitHub repo
+   - Select the `backend` folder
+   - Choose "Python 3" environment
+
+3. **Configure**:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Environment Variables**:
+     - `F1_CACHE_DIR=/opt/render/project/src/cache`
+     - `CORS_ORIGINS=https://your-frontend.vercel.app`
+
+4. **Enable Persistent Disk** (for cache):
+   - Go to "Settings" → "Persistent Disk"
+   - Mount at `/opt/render/project/src/cache`
+
+## Troubleshooting
+
+### Backend Issues
+
+- **Cache not persisting**: Ensure persistent storage/volumes are enabled
+- **CORS errors**: Check that `CORS_ORIGINS` includes your frontend URL
+- **Slow first load**: Normal - FastF1 downloads data on first session load
+
+### Frontend Issues
+
+- **API connection errors**: Verify `NEXT_PUBLIC_API_URL` is set correctly
+- **Build failures**: Check that all dependencies are in `package.json`
+
+## Custom Domain (Optional)
+
+### Vercel Custom Domain
+1. Go to your project settings
+2. Add your domain in "Domains"
+3. Follow DNS configuration instructions
+
+### Railway Custom Domain
+1. Go to your service settings
+2. Add custom domain
+3. Configure DNS records
+
+## Monitoring
+
+- **Railway**: Check logs in the dashboard
+- **Vercel**: View analytics and logs in the dashboard
+- Both platforms provide monitoring and error tracking
+
+## Cost Estimates
+
+- **Railway**: Free tier available, ~$5-20/month for production
+- **Vercel**: Free tier for hobby projects, Pro plan for production
+- **Render**: Free tier available, similar pricing to Railway
+
