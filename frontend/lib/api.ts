@@ -1,3 +1,4 @@
+// Updated API connection for DigitalOcean backend
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 // Log API URL in development to help debug
