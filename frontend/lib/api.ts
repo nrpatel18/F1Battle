@@ -1,9 +1,10 @@
 // Updated API connection for DigitalOcean backend
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// Log API URL in development to help debug
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+// Log API URL to help debug (in all environments for now)
+if (typeof window !== 'undefined') {
   console.log('API URL:', API_URL);
+  console.log('Environment:', process.env.NODE_ENV);
 }
 
 export interface Session {
@@ -52,6 +53,7 @@ export interface RaceData {
 
 export async function fetchSessions(year: number): Promise<Session[]> {
   const url = `${API_URL}/api/sessions?year=${year}`;
+  console.log('Fetching sessions from:', url); // Debug log
   try {
     const response = await fetch(url);
     if (!response.ok) {
