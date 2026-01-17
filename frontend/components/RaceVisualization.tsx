@@ -373,32 +373,11 @@ export default function RaceVisualization({
                     </Text>
                   </Billboard>
                 </group>
-                {trackGeometry.cornerData.map(({ point, normal }, i) => {
-                  const offsetX = point.x + normal.x * 6;
-                  const offsetZ = point.z + normal.z * 6;
-                  const angleToFlag = Math.atan2(
-                    offsetX - trackGeometry.flagPosition.x,
-                    offsetZ - trackGeometry.flagPosition.z
-                  );
-
-                  return (
-                    <React.Fragment key={`corner-${i}`}>
-                      <Sphere args={[0.6, 16, 16]} position={[point.x, 0.2, point.z]}>
-                        <meshStandardMaterial color="#FFD600" />
-                      </Sphere>
-                      <Text
-                        position={[offsetX, 1.8, offsetZ]}
-                        fontSize={3.8}
-                        color="#FFD600"
-                        anchorX="center"
-                        anchorY="middle"
-                        rotation={[-Math.PI / 2, angleToFlag, 0]}
-                      >
-                        {i + 1}
-                      </Text>
-                    </React.Fragment>
-                  );
-                })}
+                {trackGeometry.cornerData.map(({ point }, i) => (
+                  <Sphere key={`corner-${i}`} args={[0.6, 16, 16]} position={[point.x, 0.2, point.z]}>
+                    <meshStandardMaterial color="#FFD600" />
+                  </Sphere>
+                ))}
               </>
             )}
 
