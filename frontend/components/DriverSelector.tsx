@@ -59,8 +59,20 @@ export default function DriverSelector({
   if (loading) {
     return (
       <div className="min-h-screen bg-f1-bg flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-f1-text-secondary mb-4">Loading drivers...</div>
+        <div className="text-center space-y-4">
+          <div className="text-f1-red text-2xl font-bold">Loading Drivers...</div>
+          <div className="text-f1-text-secondary text-sm">
+            ⏳ This may take 10-15 seconds on first load
+          </div>
+          <div className="text-f1-text-secondary text-xs">
+            Pulling driver data from FastF1 API...
+          </div>
+          <div className="text-f1-text-secondary text-xs opacity-75">
+            💡 Subsequent loads will be much faster!
+          </div>
+          <div className="w-64 bg-f1-surface rounded-full h-3 mx-auto">
+            <div className="bg-f1-red h-3 rounded-full animate-pulse w-full"></div>
+          </div>
           <div className="w-16 h-16 border-4 border-f1-red border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>

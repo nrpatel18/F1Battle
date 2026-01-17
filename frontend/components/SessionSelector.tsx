@@ -14,7 +14,6 @@ export default function SessionSelector({ onSessionSelect }: SessionSelectorProp
   const [selectedRound, setSelectedRound] = useState<number | null>(null);
   const [selectedSession, setSelectedSession] = useState<string>('R');
   const [loading, setLoading] = useState(false);
-  const [driversLoading, setDriversLoading] = useState(false);
 
   const sessionTypes = [
     { value: 'Q', label: 'Qualifying' },
@@ -57,15 +56,9 @@ export default function SessionSelector({ onSessionSelect }: SessionSelectorProp
     }
   };
 
-  const handleContinue = async () => {
-    if (selectedRound && !driversLoading) {
-      setDriversLoading(true);
-      try {
-        onSessionSelect(year, selectedRound, selectedSession);
-      } finally {
-        // Note: We'll reset this in the parent component when navigation is complete
-        // For now, keep it loading to prevent double-clicks
-      }
+  const handleContinue = () => {
+    if (selectedRound) {
+      onSessionSelect(year, selectedRound, selectedSession);
     }
   };
 
@@ -154,30 +147,13 @@ export default function SessionSelector({ onSessionSelect }: SessionSelectorProp
           {/* Continue Button */}
           <motion.button
             onClick={handleContinue}
-            disabled={!selectedRound || loading || driversLoading}
-            whileHover={{ scale: driversLoading ? 1 : 1.02 }}
-            whileTap={{ scale: driversLoading ? 1 : 0.98 }}
+            disabled={!selectedRound || loading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className="w-full bg-f1-red hover:bg-f1-accent text-white font-bold uppercase py-4 px-6 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {driversLoading ? 'Loading Drivers...' : 'Select Drivers →'}
+            Select Drivers →
           </motion.button>
-          
-          {driversLoading && (
-            <div className="mt-4 text-center space-y-2">
-              <div className="text-f1-text-secondary text-sm">
-                ⏳ This may take 10-15 seconds on first load
-              </div>
-              <div className="text-f1-text-secondary text-xs">
-                Pulling driver data from FastF1 API...
-              </div>
-              <div className="text-f1-text-secondary text-xs opacity-75">
-                💡 Subsequent loads will be much faster!
-              </div>
-              <div className="w-full bg-f1-surface rounded-full h-2">
-                <div className="bg-f1-red h-2 rounded-full animate-pulse w-full"></div>
-              </div>
-            </div>
-          )}
         </div>
       </motion.div>
 
