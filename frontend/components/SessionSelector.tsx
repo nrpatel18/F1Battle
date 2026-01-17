@@ -161,6 +161,23 @@ export default function SessionSelector({ onSessionSelect }: SessionSelectorProp
           >
             {driversLoading ? 'Loading Drivers...' : 'Select Drivers →'}
           </motion.button>
+          
+          {driversLoading && (
+            <div className="mt-4 text-center space-y-2">
+              <div className="text-f1-text-secondary text-sm">
+                ⏳ This may take 10-15 seconds on first load
+              </div>
+              <div className="text-f1-text-secondary text-xs">
+                Pulling driver data from FastF1 API...
+              </div>
+              <div className="text-f1-text-secondary text-xs opacity-75">
+                💡 Subsequent loads will be much faster!
+              </div>
+              <div className="w-full bg-f1-surface rounded-full h-2">
+                <div className="bg-f1-red h-2 rounded-full animate-pulse w-full"></div>
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
 
