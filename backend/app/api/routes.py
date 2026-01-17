@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response
 from typing import List
 from app.services.f1_service import F1Service
 from app.models.schemas import SessionInfo, DriverInfo, RaceDataResponse
@@ -19,11 +19,15 @@ async def get_sessions(year: int = Query(..., ge=2020, le=2024)):
 
 @router.get("/drivers", response_model=List[DriverInfo])
 async def get_drivers(
+    response: Response,
     year: int = Query(..., ge=2020, le=2024),
     round: int = Query(..., ge=1, le=25),
     session: str = Query(..., regex="^(FP1|FP2|FP3|Q|R|Sprint|Sprint Qualifying|Sprint Shootout)$")
 ):
     """Get all drivers for a specific session."""
+    # Set cache headers for faster subsequent requests
+    response.headers["Cache-Control"] = "public, max-age=3600"  # Cache for 1 hour
+    
     drivers = f1_service.get_drivers(year, round, session)
     if not drivers:
         raise HTTPException(

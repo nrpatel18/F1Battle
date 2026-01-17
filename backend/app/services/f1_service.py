@@ -4,7 +4,8 @@ import numpy as np
 import os
 from typing import List, Dict, Optional
 from datetime import timedelta
-
+from functools import lru_cache
+import time
 
 class F1Service:
     def __init__(self, cache_dir: str = "./f1_cache"):
@@ -12,6 +13,13 @@ class F1Service:
         # Create cache directory if it doesn't exist
         os.makedirs(cache_dir, exist_ok=True)
         fastf1.Cache.enable_cache(cache_dir)
+        # In-memory cache for frequently accessed data
+        self._driver_cache = {}
+        self._session_cache = {}
+    
+    def _get_cache_key(self, year: int, round_num: int, session: str) -> str:
+        """Generate cache key for session data."""
+        return f"{year}_{round_num}_{session}"
     
     def get_sessions(self, year: int) -> List[Dict]:
         """Get all Grand Prix sessions for a given year."""
@@ -33,7 +41,17 @@ class F1Service:
             return []
     
     def get_drivers(self, year: int, round: int, session: str) -> List[Dict]:
-        """Get all drivers for a specific session."""
+        """Get all drivers for a specific session with caching."""
+        cache_key = self._get_cache_key(year, round, session)
+        
+        # Check in-memory cache first
+        if cache_key in self._driver_cache:
+            print(f"Cache hit for drivers: {cache_key}")
+            return self._driver_cache[cache_key]
+        
+        print(f"Cache miss for drivers: {cache_key}, loading from FastF1...")
+        start_time = time.time()
+        
         try:
             session_obj = fastf1.get_session(year, round, session)
             session_obj.load()
@@ -61,6 +79,12 @@ class F1Service:
                 except Exception as e:
                     print(f"Error processing driver {driver_num}: {e}")
                     continue
+            
+            # Cache the result
+            self._driver_cache[cache_key] = drivers
+            
+            load_time = time.time() - start_time
+            print(f"Loaded {len(drivers)} drivers in {load_time:.2f}s")
             
             return drivers
         except Exception as e:
