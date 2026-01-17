@@ -94,30 +94,8 @@ export default function RaceVisualization({
       0
     );
 
-    const numCorners = Math.max(
-      8,
-      Math.min(20, Math.round(trackPoints.length / 60))
-    );
-    const cornerData = Array.from({ length: numCorners }, (_, i) => {
-      const t = i / numCorners;
-      const point = curve.getPoint(t);
-      const tangent = curve.getTangent(t).normalize();
-      const normal = new THREE.Vector3(tangent.z, 0, -tangent.x).normalize();
-      return { point, normal };
-    });
-
-    const startPoint = curve.getPoint(0);
-    const startTangent = curve.getTangent(0).normalize();
-    const startNormal = new THREE.Vector3(startTangent.z, 0, -startTangent.x).normalize();
-    const flagPosition = startPoint
-      .clone()
-      .add(startNormal.clone().multiplyScalar(-8));
-
     return {
       curve,
-      cornerData,
-      startPoint,
-      flagPosition,
       transform: {
         baseScale,
         center: { x: centerVec.x, z: centerVec.z },
@@ -346,39 +324,13 @@ export default function RaceVisualization({
 
             {/* Track rendering */}
             {trackGeometry && (
-              <>
-                <Line
-                  points={trackGeometry.curve
-                    .getPoints(400)
-                    .map((p) => [p.x, p.y, p.z])}
-                  color="#e0e0e0"
-                  lineWidth={4}
-                />
-                {/* Start/finish flag */}
-                <group
-                  position={[
-                    trackGeometry.flagPosition.x,
-                    0,
-                    trackGeometry.flagPosition.z,
-                  ]}
-                >
-                  <Billboard position={[0, 5, 0]} follow>
-                    <Text
-                      fontSize={6}
-                      color="#FFFFFF"
-                      anchorX="center"
-                      anchorY="bottom"
-                    >
-                      🏁
-                    </Text>
-                  </Billboard>
-                </group>
-                {trackGeometry.cornerData.map(({ point }, i) => (
-                  <Sphere key={`corner-${i}`} args={[0.6, 16, 16]} position={[point.x, 0.2, point.z]}>
-                    <meshStandardMaterial color="#FFD600" />
-                  </Sphere>
-                ))}
-              </>
+              <Line
+                points={trackGeometry.curve
+                  .getPoints(400)
+                  .map((p) => [p.x, p.y, p.z])}
+                color="#e0e0e0"
+                lineWidth={4}
+              />
             )}
 
             {/* Driver dots */}
